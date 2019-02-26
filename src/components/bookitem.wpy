@@ -1,0 +1,80 @@
+<style lang="less">
+  .grey-text {
+    color: #9e9e9e;
+  }
+  .green-text {
+    color: #8bc34a !important;
+  }
+  .book-item {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20rpx;
+    border-bottom: 1px solid #ddd;
+  }
+  .group {
+    width: 100%;
+    display: flex;
+    padding: 8rpx;
+    justify-content: space-between;
+  }
+  .group-item {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    .grey-text;
+  }
+  .tag {
+    font-size: 13px;
+    border-radius: 30rpx;
+    margin-right: 5rpx;
+    padding-right: 5rpx;
+    padding-left: 5rpx;
+    border: 1px solid;
+  }
+</style>
+<template lang="pug">
+  repeat(for="{{books}}" key="index" index="index" item="book")
+    view(@tap.stop="detail({{book.id}})" @longpress="favorite({{book.id}})").book-item
+      view.group
+        view {{ book.book_name }}
+        view.group-item {{ book.source }}
+      view.group
+        view.group-item
+          text.material-icons.orange perm_identity
+          text {{ book.author }}
+        view.group-item {{ book.pub_date }}
+      view.group
+        view.group-item
+          text.tag.orange {{ book.book_type }}
+          text.tag.green-text {{ book.status }}
+          text.tag {{ book.label }}
+        view.group-item {{ book.word_count }}
+</template>
+<script>
+  import wepy from 'wepy'
+  import hosts from '@/config'
+  import requests from '@/utils/requests'
+  import { SET_BOOK } from '@/store/types'
+  import favoriteMixin from '@/mixins/favorite'
+
+  export default class BookItem extends wepy.component {
+    props = {
+      books: {}
+    }
+
+    methods = {
+      detail(idx) {
+        let self = this
+        requests.get({ url: hosts.book, data: { id: idx } }).then((res) => {
+          wepy.$store.dispatch({
+            type: SET_BOOK,
+            payload: res.data
+          })
+          self.$parent.$navigate('/pages/book')
+        })
+      }
+    }
+
+    mixins = [favoriteMixin]
+  }
+</script>

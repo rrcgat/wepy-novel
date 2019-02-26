@@ -1,0 +1,47 @@
+<style lang="less">
+  .list {
+    border-radius: 20rpx;
+    font-size: 32rpx;
+    margin: 40rpx 30rpx;
+    background-color: white;
+  }
+  .content {
+    min-height: 100rpx;
+    position: relative;
+    display: flex;
+    padding: 0 30rpx;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 100rpx;
+    font-size: 30rpx;
+  }
+  .content + .content {
+    border-top: 1px solid #ddd;
+  }
+  .arrow::after {
+    font-family: 'Material Icons';
+    display: block;
+    position: absolute;
+    font-size: 34rpx;
+    color: #aaa;
+    line-height: 30rpx;
+    height: 30rpx;
+    width: 30rpx;
+    text-align: center;
+    top: 0rpx;
+    bottom: 0;
+    right: 30rpx;
+    margin: auto;
+    content: 'navigate_next';
+  }
+</style>
+<template lang="pug">
+  view.list
+    slot
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class List extends wepy.component {
+  }
+</script>

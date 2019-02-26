@@ -1,0 +1,86 @@
+<style lang="less">
+  .top {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 150rpx;
+    background-color: white;
+  }
+  .search {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 100rpx;
+    margin: 20rpx 50rpx 0;
+    padding: 0 30rpx;
+    border-radius: 60rpx;
+    background-color: #ffe0b2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+  }
+  .content {
+    margin-top: 130rpx;
+  }
+</style>
+<template lang="pug">
+  view
+    view(@tap.stop="search").top
+      view.search
+        text.orange 请输入完整的作者名或书名
+        text.material-icons.orange search
+    view.content
+      bookitem(:books.sync="books")
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import BookItem from '../components/bookitem'
+  import { index } from '@/config'
+  import { get } from '@/utils/requests'
+
+  export default class Index extends wepy.page {
+    components = {
+      bookitem: BookItem
+    }
+
+    data = {
+      books: [],
+      total: 0,
+      page: 1
+    }
+
+    methods = {
+      search() {
+        this.$navigate('/pages/search')
+      }
+    }
+
+    onReachBottom(event) {
+      if (this.page >= this.total) {
+        return false
+      }
+      this.page += 1
+      let self = this
+      get({ url: index, data: { page: this.page } }).then((res) => {
+        self.books.push.apply(self.books, res.data.books)
+        self.$apply()
+      }).catch((err) => {
+        console.log(err)
+      })
+    }
+
+    onLoad() {
+      let self = this
+      get({ url: index, showLoading: true }).then((res) => {
+        self.books = res.data.books
+        self.total = res.data.total
+        self.$apply()
+      }).catch((err) => {
+        console.log(err)
+      })
+    }
+  }
+</script>

@@ -1,0 +1,66 @@
+<style lang="less">
+  page {
+    background-color: #f1f1f1;
+  }
+</style>
+<template lang="pug">
+  list
+    repeat(for="{{stars}}" key="index" index="index" item="star")
+      view(@tap.stop="detail({{star.book_id}})").content
+        view {{star.name}}
+        view(style="color: red;" @tap.stop="deleteStar({{index}}, {{star.book_id}})").material-icons delete_forever
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import hosts from '@/config'
+  import requests from '@/utils/requests'
+  import List from '@/components/list'
+  import { SET_BOOK, SET_STAR } from '@/store/types'
+
+  export default class Star extends wepy.page {
+    computed = {
+      stars() {
+        return wepy.$store.getState().info.star.stars
+      },
+      title() {
+        return wepy.$store.getState().info.star.title
+      }
+    }
+
+    components = {
+      list: List
+    }
+
+    methods = {
+      detail(bid) {
+        let self = this
+        requests.get({ url: hosts.book, data: { id: bid } }).then(res => {
+          wepy.$store.dispatch({
+            type: SET_BOOK,
+            payload: res.data
+          })
+          self.$navigate('/pages/book')
+        })
+      },
+      deleteStar(idx, bid) {
+        let stars = this.stars
+        stars.splice(idx, 1)
+        wepy.$store.dispatch({
+          type: SET_STAR,
+          payload: { stars: stars }
+        })
+        requests.delete({ url: hosts.star, data: { book_id: bid }, session: true }).then(res => {
+          wepy.showToast({
+            title: '删除成功'
+          })
+        })
+      }
+    }
+
+    onLoad() {
+      console.log(wepy.$store.getState().info.star)
+      console.log(this.stars)
+    }
+  }
+</script>

@@ -1,0 +1,82 @@
+<style lang="less">
+  .cu-timeline {
+    display: block;
+    background: #fff;
+  }
+  .cu-timeline .cu-time {
+    width: 120rpx;
+    text-align: center;
+    padding: 20rpx 10rpx;
+    font-size: 26rpx;
+    color: #888;
+    display: block;
+  }
+  .cu-timeline > .cu-item {
+    padding: 30rpx 30rpx 30rpx 120rpx;
+    position: relative;
+    display: block;
+    color: #ccc;
+    z-index: 0;
+  }
+  .cu-timeline > .cu-item::after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 1rpx;
+    background: #ddd;
+    left: 60rpx;
+    height: 100%;
+    top: 0;
+    z-index: 8;
+  }
+  .cu-timeline > .cu-item::before {
+    font-family: 'Material Icons';
+    display: block;
+    position: absolute;
+    top: 36rpx;
+    z-index: 9;
+    background: #fff;
+    width: 50rpx;
+    height: 50rpx;
+    text-align: center;
+    border: none;
+    line-height: 50rpx;
+    left: 36rpx;
+  }
+  .cu-timeline > .cu-item::before {
+    content: 'adjust';
+  }
+  .cu-timeline > .cu-item > .content {
+    background: #f1f1f1;
+    padding: 30rpx;
+    border-radius: 6rpx;
+    display: block;
+    color: #666;
+    line-height: 1.6;
+  }
+  .cu-timeline > .cu-item > .content + .content {
+    margin-top: 20rpx;
+  }
+  .content {
+    font-size: 32rpx;
+  }
+</style>
+<template lang="pug">>
+  view.cu-timeline
+    repeat(for="{{ timelines }}")
+      view.cu-time {{ item.time }}
+      view.cu-item.orange
+        repeat(for="{{ item.content }}" item="content")
+          view.content
+            text {{ content }}
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Timeline extends wepy.component {
+    props = {
+      timelines: {}
+    }
+  }
+</script>

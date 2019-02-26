@@ -1,0 +1,116 @@
+<style lang="less">
+  @orange: #ff9800;
+  @orange-lighten-1: #ffa726;
+  @orange-lighten-3: #ffcc80;
+  .top {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20rpx;
+    background-color: @orange-lighten-3;
+  }
+  .content {
+    margin-top: 110rpx;
+  }
+  .search-bar {
+    width: 100%;
+    height: 50rpx;
+    padding: 10rpx;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .item {
+    margin: 0 20rpx;
+    padding: 30rpx 0;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .right-item {
+    padding-right: 20rpx;
+  }
+  .left-item {
+    padding-left: 20rpx;
+  }
+</style>
+<template lang="pug">
+  view
+    view.top
+      input(value="{{ value }}"
+            placeholder="{{ placeholder }}"
+            maxlength="{{ maxlength }}"
+            @input="onChange"
+            @focus="onFocus"
+            @blur="onBlur"
+            @confirm="onConfirm"
+            ).search-bar
+      view(wx:if="{{ focus }}" @tap.stop="cancel").right-items
+        text.material-icons.orange cancel
+    view.content
+      view(wx:if="{{ value }}")
+        slot(name="candidate")
+      view(wx:if="{{ history }}")
+        view(style="justify-content: space-between;").item 
+          text 历史记录
+          text(@tap.stop="clearHistory").right-item 清除
+        repeat(for="{{ history }}" item="item")
+          view(@tap.stop="loadHistory({{ item }})").item
+            text.material-icons.orange history
+            text.left-item {{ item }}
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class SearchBar extends wepy.component {
+    props = {
+      value: {
+        default: '',
+        twoWay: true
+      }
+    }
+
+    data = {
+      placeholder: '请输入完整的作者名或书名',
+      focus: false,
+      maxlength: 36
+    }
+
+    computed = {
+      history() {
+        return wepy.getStorageSync('history')
+      }
+    }
+
+    methods = {
+      loadHistory(value) {
+        this.value = value
+        this.focus = true
+      },
+      cancel() {
+        console.log('cancel')
+        this.value = ''
+      },
+      clearHistory() {
+        wepy.setStorageSync('history', [])
+      },
+      onFocus() {
+        this.focus = true
+      },
+      onChange(event) {
+        this.value = event.detail.value
+      },
+      onBlur() {
+        this.focus = false
+      },
+      onConfirm() {
+        console.log('confirm', this.value)
+      }
+    }
+  }
+</script>

@@ -1,0 +1,96 @@
+<style lang="less">
+  page {
+    background-color: lighten(hsl(37, 100%, 94%), 50%);
+  }
+  @orange: #ff9800;
+  .container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+  }
+  @font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(https://fonts.gstatic.com/s/materialicons/v42/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2)
+      format('woff2');
+  }
+  .material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+  }
+  .orange {
+    color: @orange !important;
+  }
+</style>
+
+<script>
+  import wepy from 'wepy'
+  import 'wepy-async-function'
+
+  import { setStore } from 'wepy-redux'
+  import configStore from './store'
+
+  const store = configStore()
+  setStore(store)
+  wepy.$store = store
+
+  export default class extends wepy.app {
+    config = {
+      pages: [
+        'pages/index',
+        'pages/author',
+        'pages/search',
+        'pages/book',
+        'pages/home',
+        'pages/star'
+      ],
+      tabBar: {
+        selectedColor: '#ff9800',
+        list: [
+          {
+            pagePath: 'pages/index',
+            text: '首页'
+          },
+          {
+            pagePath: 'pages/home',
+            text: '我'
+          }
+        ]
+      },
+      window: {
+        backgroundTextStyle: 'light',
+        navigationBarBackgroundColor: '#ffb74d',
+        navigationBarTitleText: '曲径通幽',
+        navigationBarTextStyle: 'black'
+      }
+    }
+
+    globalData = {
+      userInfo: null
+    }
+
+    constructor() {
+      super()
+      this.use('requestfix')
+      this.use('promisify')
+    }
+
+    onLaunch() {
+    }
+  }
+</script>

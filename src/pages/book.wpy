@@ -1,0 +1,109 @@
+<style lang="less">
+  .intro {
+    border-left: solid 5px;
+    margin: 10rpx 0;
+    padding: 0 10rpx;
+    color: #9e9e9e;
+  }
+</style>
+<template lang="pug">
+  view
+    card.grey
+      view.card-title 作品信息
+      view.sub-title.group.space-between
+        view.group-item {{ book.book_name }}
+        view(@tap.stop="favorite({{book.id}})").material-icons.group-item.orange more_vert
+      view.group
+        text.material-icons perm_identity
+        text {{ book.author }}
+      view.group.space-between
+        view.group-item 发布日期
+        view.group-item {{ book.pub_date }}
+      view.group
+        text.tag.green-text {{ book.status }}
+        text.tag.cyan-text  {{ book.label }}
+        text(wx:if="{{book.book_type}}").tag.orange-text {{ book.book_type }}
+      view.group
+        text(wx:if="{{book.hero}}").tag.deep-orange-text {{ book.hero }}
+        text(wx:if="{{book.heroine}}").tag.blue-text {{ book.heroine }}
+        text(wx:if="{{book.hero}}").tag.grey-text {{ book.tag[0] }}
+      view.intro
+        text {{ book.intro }}
+    timeline(wx:if="{{timelines}}" :timelines.sync="timelines")
+    view(style="width: 750rpx; height: 800rpx;")
+      ec-canvas(id="mychart-dom-bar" canvas-id="chart-pie" ec="{{ ec }}")
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Card from '@/components/card'
+  import Timeline from '@/components/timeline'
+  import * as echarts from '../ec-canvas/echarts'
+  import favoriteMixin from '@/mixins/favorite'
+
+  export default class Book extends wepy.page {
+    config = {
+      usingComponents: {
+        'ec-canvas': '../ec-canvas/ec-canvas'
+      }
+    }
+
+    data = {
+      ec: {
+        onInit: this.initChart
+      }
+    }
+
+    computed = {
+      book() {
+        return wepy.$store.getState().info.book.info
+      },
+      timelines() {
+        return wepy.$store.getState().info.book.timeline
+      }
+    }
+
+    components = {
+      card: Card,
+      timeline: Timeline
+    }
+
+    mixins = [favoriteMixin]
+
+    initChart(canvas, width, height) {
+      const chart = echarts.init(canvas, null, {
+        width: width,
+        height: height
+      })
+      canvas.setChart(chart)
+      let pie = wepy.$store.getState().info.book.time_distribution
+
+      let option = {
+        title: {
+          text: '更新时间分布',
+          x: 'center'
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} \n{b} 点: {c} 次({d}%)'
+        },
+        color: ['#37A2DA', '#67E0E3', '#FFDB5C', '#fb7293', '#E690D1', '#9d96f5'],
+        legend: {
+          left: 'center',
+          bottom: 10,
+          data: pie.map(item => item.name)
+        },
+        series: [
+          {
+            name: '时间/次数',
+            type: 'pie',
+            data: pie
+          }
+        ]
+      }
+
+      chart.setOption(option)
+      return chart
+    }
+  }
+</script>

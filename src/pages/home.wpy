@@ -1,0 +1,106 @@
+<style lang="less">
+  page {
+    background-color: #f1f1f1;
+  }
+  .header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    padding: 30rpx 0;
+    background: white;
+  }
+  .name {
+    padding: 10rpx 0;
+    font-size: 36rpx;
+  }
+  .avatar {
+    width: 120rpx;
+    height: 120rpx;
+    margin-top: 20rpx;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+</style>
+<template lang="pug">
+  view.header
+    view.avatar
+      open-data(type="userAvatarUrl").avatar
+    view.name
+      open-data(type="userNickName" lang="zh_CN")
+  list
+    view(@tap.stop="favorite({{1}})").content.arrow
+      text.orange 我喜欢的 {{favoriteCount}}
+    view(@tap.stop="favorite({{0}})").content.arrow
+      text.orange 不喜欢的 {{unfavoriteCount}}
+    view(@tap.stop="help").content.arrow.item 帮助反馈
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import List from '@/components/list'
+  import requests from '@/utils/requests'
+  import hosts from '@/config'
+  import { SET_STAR } from '@/store/types'
+
+  export default class My extends wepy.page {
+    components = {
+      list: List
+    }
+
+    data = {
+      favoriteCount: 0,
+      unfavoriteCount: 0
+    }
+
+    onShow() {
+      requests.get({ url: hosts.star, session: true }).then(res => {
+        this.favoriteCount = res.data.like
+        this.unfavoriteCount = res.data.dislike
+      })
+    }
+
+    methods = {
+      async favorite(star) {
+        let starType = 'dislike'
+        if (star) {
+          starType = 'like'
+        }
+        if ((star && !this.favoriteCount) || (!star && !this.unfavoriteCount)) {
+          await wepy.showModal({
+            title: '提示',
+            content: '没有收藏的书',
+            showCancel: false
+          })
+          return false
+        }
+        let self = this
+        requests.get({
+          url: hosts.star,
+          data: { type: starType },
+          session: true
+        }).then(res => {
+          wepy.$store.dispatch({
+            type: SET_STAR,
+            payload: { stars: res.data.star }
+          })
+          self.$navigate('/pages/star')
+        })
+      },
+      async help() {
+        let res = await wepy.showModal({
+          title: '请邮件联系',
+          content: 'rrcgat@gmail.com',
+          confirmText: '复制',
+          showCancel: false
+        })
+        if (res.confirm) {
+          wepy.setClipboardData({
+            data: 'rrcgat@gmail.com'
+          })
+        }
+      }
+    }
+  }
+</script>

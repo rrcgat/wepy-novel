@@ -1,0 +1,78 @@
+<style lang="less">
+</style>
+<template lang="pug">
+  view
+    searchbar(:value.sync="value")
+      view(slot="candidate" @tap.stop="search('book')").item
+        text.material-icons.orange book
+        text.left-item {{ value }}
+      view(slot="candidate" @tap.stop="search('author')").item
+        text.material-icons.orange perm_identity
+        text.left-item {{ value }}
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import SearchBar from '../components/searchbar'
+  import { author, book } from '@/config'
+  import { get } from '@/utils/requests'
+  import { SET_AUTHOR, SET_BOOK, SET_BAR } from '@/store/types'
+
+  export default class Search extends wepy.page {
+    components = {
+      searchbar: SearchBar
+    }
+
+    data = {
+      value: ''
+    }
+
+    methods = {
+      search(type) {
+        let self = this
+        if (type === 'author') {
+          get({ url: author, data: { name: this.value }, showLoading: true }).then((res) => {
+            wepy.$store.dispatch({
+              type: SET_AUTHOR,
+              payload: res.data
+            })
+            let bar = {
+              source: [],
+              title: '作品信息',
+              yname: '字数'
+            }
+            for (let book of res.data.books) {
+              bar.source.push([
+                parseInt(book.time.split('~')[0]),
+                parseFloat(book.word_count.split('万')[0]),
+                book.name,
+                book.time,
+                book.word_count
+              ])
+            }
+            wepy.$store.dispatch({
+              type: SET_BAR,
+              payload: bar
+            })
+            self.$navigate('/pages/author')
+          })
+        } else {
+          get({ url: book, data: { name: this.value }, showLoading: true }).then((res) => {
+            wepy.$store.dispatch({
+              type: SET_BOOK,
+              payload: res.data
+            })
+            self.$navigate('/pages/book')
+          })
+        }
+        let history = wepy.getStorageSync('history') || []
+        let index = history.indexOf(this.value)
+        if (index !== -1) {
+          history.splice(index, 1)
+        }
+        history.unshift(this.value)
+        wepy.setStorageSync('history', history)
+      }
+    }
+  }
+</script>
