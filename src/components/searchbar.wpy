@@ -20,7 +20,7 @@
     width: 100%;
     height: 50rpx;
     padding: 10rpx;
-    font-size: 14px;
+    font-size: 30rpx;
     font-weight: bold;
   }
   .item {
@@ -29,7 +29,7 @@
     border-bottom: 1px solid #ddd;
     display: flex;
     align-items: center;
-    font-size: 14px;
+    font-size: 30rpx;
     font-weight: bold;
   }
   .right-item {

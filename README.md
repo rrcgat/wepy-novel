@@ -1,7 +1,5 @@
 # Wechat applet built with WePy
 
----
-
 ## 部分界面
 
 <img src="https://github.com/rrcgat/wepy-novel/raw/master/gitimage/index.jpg" width="90" height="130"/>

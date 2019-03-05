@@ -19,7 +19,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 14px;
+    font-size: 28rpx;
   }
   .content {
     margin-top: 130rpx;

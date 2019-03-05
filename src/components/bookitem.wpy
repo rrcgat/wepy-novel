@@ -20,15 +20,14 @@
   .group-item {
     display: flex;
     align-items: center;
-    font-size: 14px;
+    font-size: 30rpx;
     .grey-text;
   }
   .tag {
-    font-size: 13px;
+    font-size: 26rpx;
     border-radius: 30rpx;
-    margin-right: 5rpx;
-    padding-right: 5rpx;
-    padding-left: 5rpx;
+    margin-right: 10rpx;
+    padding: 0 10rpx;
     border: 1px solid;
   }
 </style>

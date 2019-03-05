@@ -10,7 +10,6 @@ export default class favoriteMixin extends wepy.mixin {
       })
 
       if (!res.cancel) {
-        console.log(res.tapIndex)
         requests
           .post({
             url: hosts.star,

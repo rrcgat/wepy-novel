@@ -1,9 +1,67 @@
 <style lang="less">
+  @grey: #9e9e9e;
   .intro {
     border-left: solid 5px;
     margin: 10rpx 0;
     padding: 0 10rpx;
-    color: #9e9e9e;
+    color: @grey;
+  }
+  .tag-content {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    align-items: center;
+  }
+  .custom-tag {
+    font-size: 24rpx;
+    display: flex;
+    align-items: center;
+    background-color: @grey;
+    margin-top: 20rpx;
+    color: white;
+    padding: 5rpx 20rpx;
+    margin-right: 10rpx;
+    border-radius: 30rpx;
+  }
+  .icon {
+    font-size: 40rpx;
+    font-family: 'Material Icons';
+  }
+  .dialog-content {
+    position: fixed;
+    display: flex;
+    flex-wrap: wrap;
+    top: 200rpx;
+    width: 650rpx;
+    margin-left: 50rpx;
+    background: #f8f8f8;
+    color: black;
+    z-index: 10;
+    border-radius: 10rpx;
+  }
+  .dialog-item {
+    display: flex;
+    width: 600rpx;
+    font-size: 30rpx;
+    margin: 0 30rpx;
+    margin-top: 30rpx;
+  }
+  .confirm {
+    padding: 30rpx 0;
+    border-top: solid 1px #ddd;
+    justify-content: center;
+  }
+  .mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0);
+  }
+  .show-dialog {
+    display: block;
   }
 </style>
 <template lang="pug">
@@ -22,13 +80,22 @@
       view.group
         text.tag.green-text {{ book.status }}
         text.tag.cyan-text  {{ book.label }}
-        text(wx:if="{{book.book_type}}").tag.orange-text {{ book.book_type }}
-      view.group
-        text(wx:if="{{book.hero}}").tag.deep-orange-text {{ book.hero }}
-        text(wx:if="{{book.heroine}}").tag.blue-text {{ book.heroine }}
-        text(wx:if="{{book.hero}}").tag.grey-text {{ book.tag[0] }}
+        picker(@change="changeType" value="{{bookTypeId}}" range="{{bookTypes}}")
+          text.tag.orange-text {{ bookTypes[bookTypeId] }}
+      view.tag-content
+        repeat(for="{{tags}}" index="index" key="index" item="tag")
+          view.custom-tag {{ tag }}
+            text(@tap.stop="deleteTag({{index}})").icon.deep-orange-text delete
+        view(@tap.stop="toggleDialog").custom-tag 添加标签
+          text.icon.orange-text add
       view.intro
         text {{ book.intro }}
+    view(style="display: {{focus ? 'block': 'none'}}")
+      view(@tap.stop="toggleDialog").mask
+      view.dialog-content
+        view.dialog-item 请输入标签
+        input(value="{{newTag}}" @input="setTag" maxlength="20" focus="{{focus}}").dialog-item
+        view(@tap.stop="addTag").dialog-item.confirm 保存
     timeline(wx:if="{{timelines}}" :timelines.sync="timelines")
     view(style="width: 750rpx; height: 800rpx;")
       ec-canvas(id="mychart-dom-bar" canvas-id="chart-pie" ec="{{ ec }}")
@@ -40,6 +107,8 @@
   import Timeline from '@/components/timeline'
   import * as echarts from '../ec-canvas/echarts'
   import favoriteMixin from '@/mixins/favorite'
+  import requests from '@/utils/requests'
+  import hosts from '@/config'
 
   export default class Book extends wepy.page {
     config = {
@@ -51,7 +120,12 @@
     data = {
       ec: {
         onInit: this.initChart
-      }
+      },
+      bookTypes: ['未知', '无 CP', '单 CP', '多 CP/P'],
+      bookTypeId: 0,
+      tags: {},
+      newTag: '',
+      focus: false
     }
 
     computed = {
@@ -68,7 +142,61 @@
       timeline: Timeline
     }
 
+    methods = {
+      addTag() {
+        this.focus = false
+        this.showDialog = false
+        let tag = this.newTag.trim()
+        if (tag && !this.tags.includes(tag)) {
+          this.tags.push(tag)
+          this.updateBook({ id: this.book.id, tag: tag, new_tag: true })
+        }
+        this.newTag = ''
+      },
+      deleteTag(index) {
+        let tag = this.tags.splice(index, 1)[0]
+        this.updateBook({ id: this.book.id, tag: tag, new_tag: false })
+      },
+      changeType(e) {
+        if (this.bookTypeId === e.detail.value) {
+          return false
+        }
+        this.bookTypeId = e.detail.value
+        this.updateBook({ id: this.book.id, book_type: this.bookTypeId })
+      },
+      toggleDialog() {
+        this.focus = !this.focus
+      },
+      setTag(e) {
+        this.newTag = e.detail.value
+      }
+    }
+
     mixins = [favoriteMixin]
+
+    onLoad() {
+      this.tags = []
+      let book = wepy.$store.getState().info.book.info
+      this.bookTypeId = this.bookTypes.indexOf(book.book_type)
+      if (book.tag) {
+        this.tags = book.tag
+      }
+    }
+
+    updateBook(data) {
+      requests.put({ url: hosts.book, data: data }).then(res => {
+        wepy.showToast({
+          title: '更新成功',
+          duration: 2000
+        })
+      }).catch(err => {
+        wepy.showToast({
+          title: '更新失败，可能出了点问题',
+          icon: 'none',
+          duration: 3000
+        })
+      })
+    }
 
     initChart(canvas, width, height) {
       const chart = echarts.init(canvas, null, {

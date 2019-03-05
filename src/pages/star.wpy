@@ -57,10 +57,5 @@
         })
       }
     }
-
-    onLoad() {
-      console.log(wepy.$store.getState().info.star)
-      console.log(this.stars)
-    }
   }
 </script>
