@@ -40,7 +40,7 @@ const request = async ({ method, url, data, session, ...rest } = {}) => {
     Authorization: await wepy.getStorageSync('account').token
   }
   if (session) {
-    _headers['sid'] = await wepy.getStorageSync('account').sid
+    _headers['Sid'] = await wepy.getStorageSync('account').sid
   }
   if (rest['headers']) {
     _headers = rest['headers']
@@ -60,6 +60,10 @@ const request = async ({ method, url, data, session, ...rest } = {}) => {
     })
     .then(res => {
       wepy.hideLoading()
+      if (res.statusCode >= 400) {
+        console.log(res)
+        throw res
+      }
       return res
     })
     .catch(err => {

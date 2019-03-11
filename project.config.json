@@ -1,57 +1,57 @@
 {
-  "description": "A WePY project",
-  "setting": {
-    "urlCheck": false,
-    "es6": false,
-    "postcss": false,
-    "minified": false,
-    "newFeature": true,
-    "autoAudits": false
-  },
-  "compileType": "miniprogram",
-  "appid": "wx20fb38dabd36c91d",
-  "projectname": "novel",
-  "miniprogramRoot": "dist/",
-  "libVersion": "2.6.1",
-  "condition": {
-    "search": {
-      "current": -1,
-      "list": []
-    },
-    "conversation": {
-      "current": -1,
-      "list": []
-    },
-    "plugin": {
-      "current": -1,
-      "list": []
-    },
-    "game": {
-      "list": []
-    },
-    "miniprogram": {
-      "current": -1,
-      "list": [
-        {
-          "id": -1,
-          "name": "author",
-          "pathName": "pages/author",
-          "query": ""
-        },
-        {
-          "id": -1,
-          "name": "book",
-          "pathName": "pages/book",
-          "query": ""
-        },
-        {
-          "id": -1,
-          "name": "home",
-          "pathName": "pages/home",
-          "query": "",
-          "scene": null
-        }
-      ]
-    }
-  }
+	"description": "A WePY project",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"postcss": false,
+		"minified": false,
+		"newFeature": true,
+		"autoAudits": false
+	},
+	"compileType": "miniprogram",
+	"appid": "wx20fb38dabd36c91d",
+	"projectname": "novel",
+	"miniprogramRoot": "dist/",
+	"libVersion": "2.6.1",
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"list": []
+		},
+		"miniprogram": {
+			"current": -1,
+			"list": [
+				{
+					"id": -1,
+					"name": "author",
+					"pathName": "pages/author",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "book",
+					"pathName": "pages/book",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "home",
+					"pathName": "pages/home",
+					"query": "",
+					"scene": null
+				}
+			]
+		}
+	}
 }

@@ -97,7 +97,7 @@
         input(value="{{newTag}}" @input="setTag" maxlength="20" focus="{{focus}}").dialog-item
         view(@tap.stop="addTag").dialog-item.confirm 保存
     timeline(wx:if="{{timelines}}" :timelines.sync="timelines")
-    view(style="width: 750rpx; height: 800rpx;")
+    view(style="width: 750rpx; height: 900rpx;")
       ec-canvas(id="mychart-dom-bar" canvas-id="chart-pie" ec="{{ ec }}")
 </template>
 
@@ -209,6 +209,7 @@
       let option = {
         title: {
           text: '更新时间分布',
+          top: 30,
           x: 'center'
         },
         tooltip: {
@@ -218,11 +219,12 @@
         color: ['#37A2DA', '#67E0E3', '#FFDB5C', '#fb7293', '#E690D1', '#9d96f5'],
         legend: {
           left: 'center',
-          bottom: 10,
+          bottom: 50,
           data: pie.map(item => item.name)
         },
         series: [
           {
+            radius: '65%',
             name: '时间/次数',
             type: 'pie',
             data: pie
