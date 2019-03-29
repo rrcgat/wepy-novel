@@ -30,6 +30,9 @@
     padding: 0 10rpx;
     border: 1px solid;
   }
+  .right-margin {
+    margin-right: 10rpx;
+  }
 </style>
 <template lang="pug">
   repeat(for="{{books}}" key="index" index="index" item="book")
@@ -39,7 +42,7 @@
         view.group-item {{ book.source }}
       view.group
         view.group-item
-          text.material-icons.orange perm_identity
+          text.iconfont.orange.right-margin &#xe601;
           text {{ book.author }}
         view.group-item {{ book.pub_date }}
       view.group
@@ -47,7 +50,7 @@
           text.tag.orange {{ book.book_type }}
           text.tag.green-text {{ book.status }}
           text.tag {{ book.label }}
-        view.group-item {{ book.word_count }}
+        view.group-item {{ book.word_count }} 字
 </template>
 <script>
   import wepy from 'wepy'

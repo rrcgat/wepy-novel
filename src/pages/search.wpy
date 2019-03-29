@@ -4,10 +4,10 @@
   view
     searchbar(:value.sync="value")
       view(slot="candidate" @tap.stop="search('book')").item
-        text.material-icons.orange book
+        text.iconfont.orange &#xe623;
         text.left-item {{ value }}
       view(slot="candidate" @tap.stop="search('author')").item
-        text.material-icons.orange perm_identity
+        text.iconfont.orange &#xe601;
         text.left-item {{ value }}
 </template>
 

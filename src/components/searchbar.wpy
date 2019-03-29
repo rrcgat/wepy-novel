@@ -51,7 +51,7 @@
             @confirm="onConfirm"
             ).search-bar
       view(wx:if="{{ focus }}" @tap.stop="cancel").right-items
-        text.material-icons.orange cancel
+        text.iconfont.orange &#xe605;
     view.content
       view(wx:if="{{ value }}")
         slot(name="candidate")
@@ -61,7 +61,7 @@
           text(@tap.stop="clearHistory").right-item 清除
         repeat(for="{{ history }}" item="item")
           view(@tap.stop="loadHistory({{ item }})").item
-            text.material-icons.orange history
+            text.iconfont.orange &#xe786;
             text.left-item {{ item }}
 </template>
 <script>

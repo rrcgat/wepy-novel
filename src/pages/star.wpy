@@ -2,13 +2,19 @@
   page {
     background-color: #f1f1f1;
   }
+  .content {
+    justify-content: space-between;
+  }
+  .delete {
+    color: red;
+  }
 </style>
 <template lang="pug">
   list
     repeat(for="{{stars}}" key="index" index="index" item="star")
       view(@tap.stop="detail({{star.book_id}})").content
         view {{star.name}}
-        view(style="color: red;" @tap.stop="deleteStar({{index}}, {{star.book_id}})").material-icons delete_forever
+        view(@tap.stop="deleteStar({{index}}, {{star.book_id}})").iconfont.delete &#xe767;
 </template>
 
 <script>

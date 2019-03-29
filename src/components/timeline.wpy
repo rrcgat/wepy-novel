@@ -30,7 +30,7 @@
     z-index: 8;
   }
   .cu-timeline > .cu-item::before {
-    font-family: 'Material Icons';
+    font-family: 'iconfont';
     display: block;
     position: absolute;
     top: 36rpx;
@@ -44,7 +44,7 @@
     left: 36rpx;
   }
   .cu-timeline > .cu-item::before {
-    content: 'adjust';
+    content: '&#xe67e;';
   }
   .cu-timeline > .cu-item > .content {
     background: #f1f1f1;

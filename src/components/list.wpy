@@ -1,25 +1,23 @@
 <style lang="less">
   .list {
-    border-radius: 20rpx;
     font-size: 32rpx;
-    margin: 40rpx 30rpx;
+    margin: 30rpx 0;
     background-color: white;
   }
   .content {
-    min-height: 100rpx;
     position: relative;
     display: flex;
     padding: 0 30rpx;
-    justify-content: space-between;
     align-items: center;
-    min-height: 100rpx;
+    min-height: 120rpx;
+    font-weight: bold;
     font-size: 30rpx;
   }
   .content + .content {
     border-top: 1px solid #ddd;
   }
   .arrow::after {
-    font-family: 'Material Icons';
+    font-family: 'iconfont';
     display: block;
     position: absolute;
     font-size: 34rpx;
@@ -32,7 +30,10 @@
     bottom: 0;
     right: 30rpx;
     margin: auto;
-    content: 'navigate_next';
+    content: '&#xe76a;';
+  }
+  .right-margin {
+    margin-right: 20rpx;
   }
 </style>
 <template lang="pug">

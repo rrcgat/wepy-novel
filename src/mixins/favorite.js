@@ -6,7 +6,7 @@ export default class favoriteMixin extends wepy.mixin {
   methods = {
     async favorite(bid) {
       let res = await wepy.showActionSheet({
-        itemList: ['💓', '💔']
+        itemList: ['喜欢', '不喜欢']
       })
 
       if (!res.cancel) {
@@ -18,9 +18,9 @@ export default class favoriteMixin extends wepy.mixin {
             data: { book_id: bid, star: res.tapIndex ^ 1 }
           })
           .then(e => {
-            let title = '💓'
+            let title = '喜欢'
             if (res.tapIndex) {
-              title = '💔'
+              title = '不喜欢'
             }
             wepy.showToast({
               title: title,

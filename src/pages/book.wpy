@@ -23,10 +23,10 @@
     margin-right: 10rpx;
     border-radius: 30rpx;
   }
-  .icon {
-    font-size: 40rpx;
-    font-family: 'Material Icons';
-  }
+  // .icon {
+  //   font-size: 40rpx;
+  //   font-family: 'Material Icons';
+  // }
   .dialog-content {
     position: fixed;
     display: flex;
@@ -63,6 +63,10 @@
   .show-dialog {
     display: block;
   }
+  .left-margin {
+    font-size: 30rpx;
+    margin-left: 10rpx;
+  }
 </style>
 <template lang="pug">
   view
@@ -70,10 +74,10 @@
       view.card-title 作品信息
       view.sub-title.group.space-between
         view.group-item {{ book.book_name }}
-        view(@tap.stop="favorite({{book.id}})").material-icons.group-item.orange more_vert
+        view(@tap.stop="favorite({{book.id}})").iconfont.group-item.orange {{ isLike }}
       view.group
-        text.material-icons perm_identity
-        text {{ book.author }}
+        text.iconfont.orange &#xe601;
+        text.left-margin {{ book.author }}
       view.group.space-between
         view.group-item 发布日期
         view.group-item {{ book.pub_date }}
@@ -85,9 +89,9 @@
       view.tag-content
         repeat(for="{{tags}}" index="index" key="index" item="tag")
           view.custom-tag {{ tag }}
-            text(@tap.stop="deleteTag({{index}})").icon.deep-orange-text delete
+            text(@tap.stop="deleteTag({{index}})").iconfont.deep-orange-text.left-margin &#xe767;
         view(@tap.stop="toggleDialog").custom-tag 添加标签
-          text.icon.orange-text add
+          text.iconfont.orange-text.left-margin &#xe604;
       view.intro
         text {{ book.intro }}
     view(style="display: {{focus ? 'block': 'none'}}")
@@ -123,6 +127,7 @@
       },
       bookTypes: ['未知', '无 CP', '单 CP', '多 CP/P'],
       bookTypeId: 0,
+      isLike: '&#xf044;',
       tags: {},
       newTag: '',
       focus: false
@@ -190,6 +195,7 @@
           duration: 2000
         })
       }).catch(err => {
+        console.log(err)
         wepy.showToast({
           title: '更新失败，可能出了点问题',
           icon: 'none',

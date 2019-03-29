@@ -22,6 +22,9 @@
     border-radius: 50%;
     overflow: hidden;
   }
+  .help {
+    color: #9e9e9e;
+  }
 </style>
 <template lang="pug">
   view.header
@@ -31,10 +34,15 @@
       open-data(type="userNickName" lang="zh_CN")
   list
     view(@tap.stop="favorite({{1}})").content.arrow
+      text.iconfont.orange.right-margin &#xe622;
       text.orange 我喜欢的 {{favoriteCount}}
     view(@tap.stop="favorite({{0}})").content.arrow
+      text.iconfont.orange.right-margin &#xe62a;
       text.orange 不喜欢的 {{unfavoriteCount}}
-    view(@tap.stop="help").content.arrow.item 帮助反馈
+  list
+    view(@tap.stop="help").content.arrow.item
+      text.iconfont.right-margin &#xe6eb;
+      text.help 帮助反馈
 </template>
 
 <script>

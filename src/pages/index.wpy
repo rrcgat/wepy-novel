@@ -30,7 +30,7 @@
     view(@tap.stop="search").top
       view.search
         text.orange 请输入完整的作者名或书名
-        text.material-icons.orange search
+        text.iconfont.orange &#xe603;
     view.content
       bookitem(:books.sync="books")
 </template>

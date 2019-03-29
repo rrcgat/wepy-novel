@@ -12,15 +12,18 @@
     box-sizing: border-box;
   }
   @font-face {
-    font-family: 'Material Icons';
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/materialicons/v42/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2)
-      format('woff2');
+    font-family: 'iconfont'; /* project id 1101885 */
+    src: url('//at.alicdn.com/t/font_1101885_hjruuh9h16l.eot');
+    src: url('//at.alicdn.com/t/font_1101885_hjruuh9h16l.eot?#iefix')
+        format('embedded-opentype'),
+      url('//at.alicdn.com/t/font_1101885_hjruuh9h16l.woff2') format('woff2'),
+      url('//at.alicdn.com/t/font_1101885_hjruuh9h16l.woff') format('woff'),
+      url('//at.alicdn.com/t/font_1101885_hjruuh9h16l.ttf') format('truetype'),
+      url('//at.alicdn.com/t/font_1101885_hjruuh9h16l.svg#iconfont') format('svg');
   }
-  .material-icons {
-    font-family: 'Material Icons';
-    font-size: 40rpx;
+  .iconfont {
+    font-family: 'iconfont';
+    font-size: 35rpx;
     font-weight: normal;
     font-style: normal;
     line-height: 1;
