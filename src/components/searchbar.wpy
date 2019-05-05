@@ -7,14 +7,15 @@
     top: 0;
     right: 0;
     left: 0;
+    height: 120rpx;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20rpx;
+    padding-left: 20rpx;
     background-color: @orange-lighten-3;
   }
   .content {
-    margin-top: 110rpx;
+    margin-top: 120rpx;
   }
   .search-bar {
     width: 100%;
@@ -38,6 +39,13 @@
   .left-item {
     padding-left: 20rpx;
   }
+  .clear {
+    width: 120rpx;
+    height: 120rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 </style>
 <template lang="pug">
   view
@@ -50,7 +58,7 @@
             @blur="onBlur"
             @confirm="onConfirm"
             ).search-bar
-      view(wx:if="{{ focus }}" @tap.stop="cancel").right-items
+      view(wx:if="{{ focus }}" @tap.stop="cancel").clear
         text.iconfont.orange &#xe605;
     view.content
       view(wx:if="{{ value }}")
@@ -93,7 +101,6 @@
         this.focus = true
       },
       cancel() {
-        console.log('cancel')
         this.value = ''
       },
       clearHistory() {
@@ -110,6 +117,7 @@
       },
       onConfirm() {
         console.log('confirm', this.value)
+        this.$root.$navigate('/pages/result?kw=' + this.value)
       }
     }
   }

@@ -25,6 +25,21 @@
   .help {
     color: #9e9e9e;
   }
+  button {
+    background-color: white;
+    color: unset;
+    font-size: unset;
+    line-height: unset;
+    min-height: 120rpx;
+    width: 100%;
+    margin-left: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+  button::after {
+    border: none;
+  }
 </style>
 <template lang="pug">
   view.header
@@ -40,9 +55,13 @@
       text.iconfont.orange.right-margin &#xe62a;
       text.orange 不喜欢的 {{unfavoriteCount}}
   list
-    view(@tap.stop="help").content.arrow.item
+    view.content.arrow.item.help
+      button(open-type="contact" hover-class="none")
+        text.iconfont.right-margin &#xe606;
+        text 帮助反馈
+    view(@tap.stop="faq").content.arrow.item.help
       text.iconfont.right-margin &#xe6eb;
-      text.help 帮助反馈
+      text 常见问题
 </template>
 
 <script>
@@ -66,6 +85,9 @@
       requests.get({ url: hosts.star, session: true }).then(res => {
         this.favoriteCount = res.data.like
         this.unfavoriteCount = res.data.dislike
+        this.$parent.globalData.unfavoriteCount = res.data.dislike
+        this.$parent.globalData.favoriteCount = res.data.like
+        this.$apply()
       })
     }
 
@@ -91,23 +113,13 @@
         }).then(res => {
           wepy.$store.dispatch({
             type: SET_STAR,
-            payload: { stars: res.data.star }
+            payload: { books: res.data.star }
           })
-          self.$navigate('/pages/star')
+          self.$navigate('/pages/star?star=' + star)
         })
       },
-      async help() {
-        let res = await wepy.showModal({
-          title: '请邮件联系',
-          content: 'rrcgat@gmail.com',
-          confirmText: '复制',
-          showCancel: false
-        })
-        if (res.confirm) {
-          wepy.setClipboardData({
-            data: 'rrcgat@gmail.com'
-          })
-        }
+      faq() {
+        this.$navigate('/pages/faq')
       }
     }
   }

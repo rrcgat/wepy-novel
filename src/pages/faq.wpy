@@ -1,0 +1,54 @@
+<style lang="less">
+  page {
+    background-color: #f1f1f1;
+  }
+  .content {
+    padding: 35rpx;
+    border-top: 1px solid #ddd;
+    margin-top: 20rpx;
+    background-color: white;
+  }
+  .content:last-child {
+    border-bottom: 1px solid #ddd;
+  }
+  .title {
+    font-size: 36rpx;
+    font-weight: bold;
+    padding: 5rpx 0;
+  }
+  .answer {
+    font-size: 30rpx;
+    padding-top: 30rpx;
+    padding-bottom: 5rpx;
+  }
+</style>
+<template lang="pug">
+  view(style="margin-bottom:50rpx")
+    repeat(for="{{questions}}" key="index" index="index" item="q")
+      view.content
+        view.title {{ q.title }}
+        view.answer {{ q.ans }}
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Faq extends wepy.page {
+    data = {
+      questions: [
+        {
+          title: '这里能干什么？',
+          ans: '在这里，你能查找起点中文网的书籍、作者信息——我们为你准备好的一些统计数据。后面可能会添加一些额外的信息'
+        },
+        {
+          title: '我能做什么？',
+          ans: '你可以给书籍添加个人标签，收藏喜欢的书籍，记录不喜欢的书籍。'
+        },
+        {
+          title: '这里能看书吗？',
+          ans: '不能，请支持正版。'
+        }
+      ]
+    }
+  }
+</script>

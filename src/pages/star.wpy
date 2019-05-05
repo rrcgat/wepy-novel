@@ -2,66 +2,57 @@
   page {
     background-color: #f1f1f1;
   }
-  .content {
-    justify-content: space-between;
-  }
-  .delete {
-    color: red;
-  }
 </style>
 <template lang="pug">
-  list
-    repeat(for="{{stars}}" key="index" index="index" item="star")
-      view(@tap.stop="detail({{star.book_id}})").content
-        view {{star.name}}
-        view(@tap.stop="deleteStar({{index}}, {{star.book_id}})").iconfont.delete &#xe767;
+  view
+    bookitem(:books.sync="books")
 </template>
 
 <script>
   import wepy from 'wepy'
   import hosts from '@/config'
   import requests from '@/utils/requests'
-  import List from '@/components/list'
-  import { SET_BOOK, SET_STAR } from '@/store/types'
+  import BookItem from '../components/bookitem'
 
   export default class Star extends wepy.page {
-    computed = {
-      stars() {
-        return wepy.$store.getState().info.star.stars
-      },
-      title() {
-        return wepy.$store.getState().info.star.title
-      }
+    data = {
+      books: [],
+      star: null,
+      page: 1
     }
 
     components = {
-      list: List
+      bookitem: BookItem
+    }
+
+    computed = {
+      total() {
+        if (this.star === '1') {
+          return Math.ceil(this.$parent.globalData.favoriteCount, 20)
+        } else {
+          return Math.ceil(this.$parent.globalData.unfavoriteCount, 20)
+        }
+      }
     }
 
     methods = {
-      detail(bid) {
-        let self = this
-        requests.get({ url: hosts.book, data: { id: bid } }).then(res => {
-          wepy.$store.dispatch({
-            type: SET_BOOK,
-            payload: res.data
-          })
-          self.$navigate('/pages/book')
-        })
-      },
-      deleteStar(idx, bid) {
-        let stars = this.stars
-        stars.splice(idx, 1)
-        wepy.$store.dispatch({
-          type: SET_STAR,
-          payload: { stars: stars }
-        })
-        requests.delete({ url: hosts.star, data: { book_id: bid }, session: true }).then(res => {
-          wepy.showToast({
-            title: '删除成功'
-          })
-        })
+    }
+    onReachBottom(event) {
+      if (this.page >= this.total) {
+        return false
       }
+      this.page += 1
+      let self = this
+      requests.get({ url: hosts.star, data: { page: this.page } }).then((res) => {
+        self.books.push.apply(self.books, res.data.books)
+        self.$apply()
+      }).catch((err) => {
+        console.log(err)
+      })
+    }
+    onLoad(options) {
+      this.books = wepy.$store.getState().info.star.books
+      this.star = options.star
     }
   }
 </script>

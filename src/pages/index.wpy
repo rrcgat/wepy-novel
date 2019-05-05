@@ -1,16 +1,17 @@
 <style lang="less">
-  .top {
-    position: fixed;
-    top: 0;
+  .center-align {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .header {
     width: 100%;
-    height: 150rpx;
-    background-color: white;
+    height: 240rpx;
+    font-size: 36rpx;
+    font-weight: bold;
+    .center-align();
   }
   .search {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
     height: 100rpx;
     margin: 20rpx 50rpx 0;
     padding: 0 30rpx;
@@ -19,27 +20,79 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 28rpx;
+    font-size: 36rpx;
+    font-weight: bold;
   }
   .content {
-    margin-top: 130rpx;
+    margin: 0 20rpx;
+    margin-top: 100rpx;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .item {
+    width: 25%;
+    .center-align();
+    flex-direction: column;
+  }
+  .circle {
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 100rpx;
+    font-size: 40rpx;
+    .center-align();
+    color: #757575;
+    background-color: #f5f5f5;
+  }
+  .msg {
+    width: 160rpx;
+    font-size: 25rpx;
+    padding: 10px 0;
+    font-weight: bold;
+    color: #757575;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .footer {
+    position: absolute;
+    bottom: 50rpx;
+    width: 100%;
+    .center-align();
+    flex-direction: column;
+  }
+  .share {
+    font-size: 15px;
+    width: 100%;
+    .center-align();
+    color: #9e9e9e;
+    background-color: white;
+  }
+  button::after {
+    border: none;
   }
 </style>
 <template lang="pug">
   view
-    view(@tap.stop="search").top
-      view.search
-        text.orange 请输入完整的作者名或书名
-        text.iconfont.orange &#xe603;
+    view.header {{ title }}
+    view(@tap.stop="search").search
+      text.orange 从这里开始
+      text.iconfont.orange &#xe603;
     view.content
-      bookitem(:books.sync="books")
+      repeat(for="{{ history }}" item="item")
+        view.item
+          view.circle {{ item[0] }}
+          view.msg {{ item }}
+    view.footer
+      button(open-type="share").share 分享给朋友
+      //- view.share 一些数据
 </template>
 
 <script>
   import wepy from 'wepy'
   import BookItem from '../components/bookitem'
-  import { index } from '@/config'
-  import { get } from '@/utils/requests'
+  // import { index } from '@/config'
+  // import { get } from '@/utils/requests'
 
   export default class Index extends wepy.page {
     components = {
@@ -47,9 +100,13 @@
     }
 
     data = {
-      books: [],
-      total: 0,
-      page: 1
+      title: '读书是一件正经事'
+    }
+
+    computed = {
+      history() {
+        return wepy.getStorageSync('history').slice(0, 8)
+      }
     }
 
     methods = {
@@ -58,29 +115,35 @@
       }
     }
 
-    onReachBottom(event) {
-      if (this.page >= this.total) {
-        return false
+    onShareAppMessage() {
+      return {
+        path: '/pages/index'
       }
-      this.page += 1
-      let self = this
-      get({ url: index, data: { page: this.page } }).then((res) => {
-        self.books.push.apply(self.books, res.data.books)
-        self.$apply()
-      }).catch((err) => {
-        console.log(err)
-      })
     }
 
-    onLoad() {
-      let self = this
-      get({ url: index, showLoading: true }).then((res) => {
-        self.books = res.data.books
-        self.total = res.data.total
-        self.$apply()
-      }).catch((err) => {
-        console.log(err)
-      })
-    }
+    // onReachBottom(event) {
+    //   if (this.page >= this.total) {
+    //     return false
+    //   }
+    //   this.page += 1
+    //   let self = this
+    //   get({ url: index, data: { page: this.page } }).then((res) => {
+    //     self.books.push.apply(self.books, res.data.books)
+    //     self.$apply()
+    //   }).catch((err) => {
+    //     console.log(err)
+    //   })
+    // }
+
+    // onLoad() {
+    //   let self = this
+    //   get({ url: index, showLoading: true }).then((res) => {
+    //     self.books = res.data.books
+    //     self.total = res.data.total
+    //     self.$apply()
+    //   }).catch((err) => {
+    //     console.log(err)
+    //   })
+    // }
   }
 </script>

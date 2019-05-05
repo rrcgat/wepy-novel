@@ -68,12 +68,15 @@ const request = async ({ method, url, data, session, ...rest } = {}) => {
     })
     .catch(err => {
       wepy.hideLoading()
-      wepy.showToast({
-        title: '请求失败',
-        icon: 'none',
-        duration: 2000
-      })
-      throw err
+      if (rest['catch']) {
+        wepy.showToast({
+          title: '请求失败',
+          icon: 'none',
+          duration: 2000
+        })
+      } else {
+        throw err
+      }
     })
 }
 

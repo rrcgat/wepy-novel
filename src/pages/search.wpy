@@ -30,6 +30,7 @@
     methods = {
       search(type) {
         let self = this
+        let title = '请求失败，服务器不行了'
         if (type === 'author') {
           get({ url: author, data: { name: this.value }, showLoading: true }).then((res) => {
             wepy.$store.dispatch({
@@ -55,6 +56,15 @@
               payload: bar
             })
             self.$navigate('/pages/author')
+          }).catch(err => {
+            if (err.statusCode === 404) {
+              title = '作者未找到'
+            }
+            wepy.showToast({
+              title: title,
+              icon: 'none',
+              duration: 2000
+            })
           })
         } else {
           get({ url: book, data: { name: this.value }, showLoading: true }).then((res) => {
@@ -63,12 +73,24 @@
               payload: res.data
             })
             self.$navigate('/pages/book')
+          }).catch(err => {
+            if (err.statusCode === 404) {
+              title = '书籍未找到'
+            }
+            wepy.showToast({
+              title: title,
+              icon: 'none',
+              duration: 2000
+            })
           })
         }
         let history = wepy.getStorageSync('history') || []
         let index = history.indexOf(this.value)
         if (index !== -1) {
           history.splice(index, 1)
+        }
+        if (history.length > 10) {
+          history.pop()
         }
         history.unshift(this.value)
         wepy.setStorageSync('history', history)

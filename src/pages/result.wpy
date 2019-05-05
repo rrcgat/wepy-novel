@@ -1,0 +1,108 @@
+<style lang="less">
+  .tips {
+    font-size: 36rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 150rpx;
+  }
+  .search {
+    color: blue;
+  }
+</style>
+<template lang="pug">
+  view
+    bookitem(:books.sync="books")
+    view(wx:if="{{tips}}")
+      view.tips {{ tips }}
+      view(@tap="search").tips.search 试试搜索书籍
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import BookItem from '../components/bookitem'
+  import requests from '@/utils/requests'
+  import hosts from '@/config'
+  import { SET_BOOK } from '@/store/types'
+
+  export default class Result extends wepy.page {
+    components = {
+      bookitem: BookItem
+    }
+
+    data = {
+      books: [],
+      kw: '',
+      noMore: false,
+      tips: '',
+      page: 1,
+      searched: false
+    }
+
+    methods = {
+      search() {
+        if (this.searched) {
+          return false
+        }
+        this.searched = true
+        requests.get({ url: hosts.book, data: { name: this.kw }, showLoading: true }).then((res) => {
+          wepy.$store.dispatch({
+            type: SET_BOOK,
+            payload: res.data
+          })
+          self.$navigate('/pages/book')
+        }).catch(err => {
+          console.log(err)
+          let title = '书籍未找到'
+          wepy.showToast({
+            title: title,
+            icon: 'none',
+            duration: 2000
+          })
+        })
+      }
+    }
+
+    onLoad(options) {
+      this.kw = options.kw
+      let self = this
+      requests.get({ url: hosts.search, data: { kw: options.kw }, showLoading: true }).then((res) => {
+        self.books.push.apply(self.books, res.data.books)
+        if (res.data.books.length < 10) {
+          self.noMore = true
+        }
+        self.$apply()
+      }).catch(err => {
+        let title = '出错了'
+        if (err.statusCode === 404) {
+          title = '未找到相关信息'
+          self.tips = '什么也没找到'
+          self.$apply()
+        }
+        wepy.showToast({
+          title: title,
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    }
+    onReachBottom(event) {
+      if (this.noMore) {
+        return false
+      }
+      this.page += 1
+      let self = this
+      requests.get({ url: hosts.search, data: { kw: this.kw, page: this.page } }).then((res) => {
+        self.books.push.apply(self.books, res.data.books)
+        if (res.data.books.length < 10) {
+          self.noMore = true
+        }
+        self.$apply()
+      }).catch((err) => {
+        console.log(err)
+        self.noMore = true
+        self.$apply()
+      })
+    }
+  }
+</script>

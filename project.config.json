@@ -1,18 +1,19 @@
 {
 	"description": "A WePY project",
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": false,
 		"postcss": false,
 		"minified": false,
 		"newFeature": true,
-		"autoAudits": false
+		"autoAudits": false,
+		"checkInvalidKey": true
 	},
 	"compileType": "miniprogram",
 	"appid": "wx20fb38dabd36c91d",
 	"projectname": "novel",
 	"miniprogramRoot": "dist/",
-	"libVersion": "2.6.1",
+	"libVersion": "2.6.4",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
 	"condition": {

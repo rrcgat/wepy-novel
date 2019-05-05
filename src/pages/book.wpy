@@ -74,7 +74,10 @@
       view.card-title 作品信息
       view.sub-title.group.space-between
         view.group-item {{ book.book_name }}
-        view(@tap.stop="favorite({{book.id}})").iconfont.group-item.orange {{ isLike }}
+        view(@tap.stop="favorite({{book.id}})").iconfont.group-item.orange 
+          text &#xf044;
+          //- text &#xe622; // like
+          //- text &#xe62a; // break
       view.group
         text.iconfont.orange &#xe601;
         text.left-margin {{ book.author }}
@@ -127,7 +130,6 @@
       },
       bookTypes: ['未知', '无 CP', '单 CP', '多 CP/P'],
       bookTypeId: 0,
-      isLike: '&#xf044;',
       tags: {},
       newTag: '',
       focus: false
@@ -154,20 +156,20 @@
         let tag = this.newTag.trim()
         if (tag && !this.tags.includes(tag)) {
           this.tags.push(tag)
-          this.updateBook({ id: this.book.id, tag: tag, new_tag: true })
+          this.updateBook(requests.post, { id: this.book.id, tag: tag })
         }
         this.newTag = ''
       },
       deleteTag(index) {
         let tag = this.tags.splice(index, 1)[0]
-        this.updateBook({ id: this.book.id, tag: tag, new_tag: false })
+        this.updateBook(requests.delete, { id: this.book.id, tag: tag })
       },
       changeType(e) {
         if (this.bookTypeId === e.detail.value) {
           return false
         }
         this.bookTypeId = e.detail.value
-        this.updateBook({ id: this.book.id, book_type: this.bookTypeId })
+        this.updateBook(requests.put, { id: this.book.id, book_type: this.bookTypeId })
       },
       toggleDialog() {
         this.focus = !this.focus
@@ -188,8 +190,8 @@
       }
     }
 
-    updateBook(data) {
-      requests.put({ url: hosts.book, data: data }).then(res => {
+    updateBook(request, data) {
+      request({ url: hosts.book, data: data }).then(res => {
         wepy.showToast({
           title: '更新成功',
           duration: 2000

@@ -10,6 +10,7 @@
     flex-wrap: wrap;
     padding: 20rpx;
     border-bottom: 1px solid #ddd;
+    background-color: white;
   }
   .group {
     width: 100%;
@@ -36,7 +37,7 @@
 </style>
 <template lang="pug">
   repeat(for="{{books}}" key="index" index="index" item="book")
-    view(@tap.stop="detail({{book.id}})" @longpress="favorite({{book.id}})").book-item
+    view(@tap.stop="detail({{book.id}})" @longpress="deleteStar(index, {{book.id}})").book-item
       view.group
         view {{ book.book_name }}
         view.group-item {{ book.source }}
@@ -57,11 +58,15 @@
   import hosts from '@/config'
   import requests from '@/utils/requests'
   import { SET_BOOK } from '@/store/types'
-  import favoriteMixin from '@/mixins/favorite'
+  // import favoriteMixin from '@/mixins/favorite'
 
   export default class BookItem extends wepy.component {
     props = {
-      books: {}
+      books: {
+        type: Array,
+        default: [],
+        twoWay: true
+      }
     }
 
     methods = {
@@ -74,9 +79,24 @@
           })
           self.$parent.$navigate('/pages/book')
         })
+      },
+      async deleteStar(idx, bid) {
+        let res = await wepy.showModal({
+          title: '提示',
+          content: '是否删除？'
+        })
+        if (res.confirm) {
+          this.books.splice(idx, 1)
+          this.$apply()
+          requests.delete({ url: hosts.star, data: { book_id: bid }, session: true }).then(res => {
+            wepy.showToast({
+              title: ' 删除成功'
+            })
+          })
+        }
       }
     }
 
-    mixins = [favoriteMixin]
+    // mixins = [favoriteMixin]
   }
 </script>
