@@ -37,7 +37,7 @@
 </style>
 <template lang="pug">
   repeat(for="{{books}}" key="index" index="index" item="book")
-    view(@tap.stop="detail({{book.id}})" @longpress="deleteStar(index, {{book.id}})").book-item
+    view(@tap.stop="detail({{book.id}})" @longpress="deleteStar({{index}}, {{book.id}})").book-item
       view.group
         view {{ book.book_name }}
         view.group-item {{ book.source }}
@@ -96,7 +96,5 @@
         }
       }
     }
-
-    // mixins = [favoriteMixin]
   }
 </script>

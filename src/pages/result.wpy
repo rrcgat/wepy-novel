@@ -50,7 +50,7 @@
             type: SET_BOOK,
             payload: res.data
           })
-          self.$navigate('/pages/book')
+          this.$navigate('/pages/book')
         }).catch(err => {
           console.log(err)
           let title = '书籍未找到'

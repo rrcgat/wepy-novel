@@ -23,10 +23,6 @@
     margin-right: 10rpx;
     border-radius: 30rpx;
   }
-  // .icon {
-  //   font-size: 40rpx;
-  //   font-family: 'Material Icons';
-  // }
   .dialog-content {
     position: fixed;
     display: flex;
@@ -85,6 +81,7 @@
         view.group-item 发布日期
         view.group-item {{ book.pub_date }}
       view.group
+        text.tag {{ book.word_count / 10000 }} 万字
         text.tag.green-text {{ book.status }}
         text.tag.cyan-text  {{ book.label }}
         picker(@change="changeType" value="{{bookTypeId}}" range="{{bookTypes}}")

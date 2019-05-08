@@ -80,7 +80,7 @@
       text.iconfont.orange &#xe603;
     view.content
       repeat(for="{{ history }}" item="item")
-        view.item
+        view(@tap.stop="searchRes({{item}})").item
           view.circle {{ item[0] }}
           view.msg {{ item }}
     view.footer
@@ -112,6 +112,9 @@
     methods = {
       search() {
         this.$navigate('/pages/search')
+      },
+      searchRes(kw) {
+        this.$navigate('/pages/result?kw=' + kw)
       }
     }
 
@@ -120,30 +123,5 @@
         path: '/pages/index'
       }
     }
-
-    // onReachBottom(event) {
-    //   if (this.page >= this.total) {
-    //     return false
-    //   }
-    //   this.page += 1
-    //   let self = this
-    //   get({ url: index, data: { page: this.page } }).then((res) => {
-    //     self.books.push.apply(self.books, res.data.books)
-    //     self.$apply()
-    //   }).catch((err) => {
-    //     console.log(err)
-    //   })
-    // }
-
-    // onLoad() {
-    //   let self = this
-    //   get({ url: index, showLoading: true }).then((res) => {
-    //     self.books = res.data.books
-    //     self.total = res.data.total
-    //     self.$apply()
-    //   }).catch((err) => {
-    //     console.log(err)
-    //   })
-    // }
   }
 </script>
