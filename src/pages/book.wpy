@@ -147,13 +147,15 @@
     }
 
     methods = {
-      addTag() {
+      async addTag() {
         this.focus = false
         this.showDialog = false
         let tag = this.newTag.trim()
         if (tag && !this.tags.includes(tag)) {
-          this.tags.push(tag)
-          this.updateBook(requests.post, { id: this.book.id, tag: tag })
+          let res = await this.updateBook(requests.post, { id: this.book.id, tag: tag })
+          if (res) {
+            this.tags.push(tag)
+          }
         }
         this.newTag = ''
       },
@@ -188,6 +190,7 @@
     }
 
     updateBook(request, data) {
+      let res = true
       request({ url: hosts.book, data: data }).then(res => {
         wepy.showToast({
           title: '更新成功',
@@ -195,12 +198,18 @@
         })
       }).catch(err => {
         console.log(err)
+        let title = '更新失败，可能出了点问题'
+        if (err.statusCode === 400) {
+          title = '更新失败，请检查是否有敏感词或是否为有效标签'
+        }
         wepy.showToast({
-          title: '更新失败，可能出了点问题',
+          title: title,
           icon: 'none',
           duration: 3000
         })
+        res = false
       })
+      return res
     }
 
     initChart(canvas, width, height) {

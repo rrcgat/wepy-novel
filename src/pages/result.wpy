@@ -22,6 +22,7 @@
   import wepy from 'wepy'
   import BookItem from '../components/bookitem'
   import requests from '@/utils/requests'
+  import history from '@/utils/history'
   import hosts from '@/config'
   import { SET_BOOK } from '@/store/types'
 
@@ -85,6 +86,7 @@
           duration: 2000
         })
       })
+      history.save(this.kw)
     }
     onReachBottom(event) {
       if (this.noMore) {
